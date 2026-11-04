@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tower Defense Game</title>
+    <style>
+        body {
+            margin: 0;
+            background: #0b1f44;
+            font-family: sans-serif;
+            text-align: center;
+            color: white;
+        }
+        #hud {
+            margin: 10px;
+            font-size: 18px;
+        }
+        #game {
+            width: 350px;
+            height: 450px;
+            margin: 10px auto;
+            position: relative;
+            border: 4px solid #ffcc00;
+            border-radius: 12px;
+            background: #2ecc71;
+            overflow: hidden;
+        }
+        .tower {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #34495e;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+        .enemy {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #e74c3c;
+            border-radius: 50%;
+        }
+        #startWave {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #f1c40f;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #0b1f44;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="hud">
+        <span id="lives">❤ Lives: 3</span> | 
+        <span id="coins">🪙 Coins: 150</span> | 
+        <span id="wave">Wave: 1</span>
+    </div>
+
+    <div id="game" onclick="placeTower(event)"></div>
+
+    <button id="startWave" onclick="startWave()">▶ START WAVE</button>
+
+    <script>
+        const game = document.getElementById('game');
+        let lives = 3;
+        let coins = 150;
+        let wave = 1;
+
+        function updateHUD() {
+            document.getElementById('lives').innerText = `❤ Lives: ${lives}`;
+            document.getElementById('coins').innerText = `🪙 Coins: ${coins}`;
+            document.getElementById('wave').innerText = `Wave: ${wave}`;
+        }
+
+        function placeTower(event) {
+            if (coins >= 50) {
+                coins -= 50;
+                const rect = game.getBoundingClientRect();
+                const x = event.clientX - rect.left - 20;
+                const y = event.clientY - rect.top - 20;
+
+                const tower = document.createElement('div');
+                tower.classList.add('tower');
+                tower.style.left = `${x}px`;
+                tower.style.top = `${y}px`;
+                tower.innerText = '🛡️';
+                game.appendChild(tower);
+                updateHUD();
+            } else {
+                alert("Coins kam hain!");
+            }
+        }
+
+        function startWave() {
+            let enemy = document.createElement('div');
+            enemy.classList.add('enemy');
+            enemy.style.left = '0px';
+            enemy.style.top = '200px';
+            game.appendChild(enemy);
+
+            let pos = 0;
+            let interval = setInterval(() => {
+                if (pos >= 330) {
+                    clearInterval(interval);
+                    enemy.remove();
+                    lives--;
+                    updateHUD();
+                    if (lives <= 0) {
+                        alert("Game Over!");
+                        location.reload();
+                    }
+                } else {
+                    pos += 3;
+                    enemy.style.left = `${pos}px`;
+                }
+            }, 30);
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Defense Pro</title>
+    <style>
+        body {
+            margin: 0;
+            background: #1a1a2e;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+            user-select: none;
+        }
+        h1 {
+            margin: 5px 0;
+            font-size: 20px;
+            color: #e94560;
+        }
+        #ui {
+            background: #16213e;
+            padding: 6px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            font-size: 13px;
+            border-bottom: 2px solid #0f3460;
+        }
+        canvas {
+            background: #0f3460;
+            display: block;
+            margin: 10px auto;
+            border: 2px solid #e94560;
+        }
+        .controls-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff6b6b;
+        }
+        .tower-btn.selected {
+            background: #00adb5;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tower Defense Pro</h1>
+    <div id="ui">
+        <div>Lives: <span id="lives">20</span></div>
+        <div>Gold: <span id="gold">200</span></div>
+        <div>Wave: <span id="wave">0</span></div>
+        <div>Score: <span id="score">0</span></div>
+    </div>
+
+    <canvas id="gameCanvas" width="350" height="350"></canvas>
+
+    <div class="controls-container">
+        <button id="archerBtn" class="tower-btn" onclick="selectTower('archer')">Archer (50G)</button>
+        <button id="cannonBtn" class="tower-btn" onclick="selectTower('cannon')">Cannon (100G)</button>
+    </div>
+    <div>
+        <button id="waveBtn" onclick="startNextWave()">Start Wave</button>
+    </div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let lives = 20;
+let gold = 200; // شروعاتی کوائنز 200 کر دیے گئے ہیں
+let wave = 0;
+let score = 0;
+let selectedTowerType = null;
+
+const path = [
+    {x: 0, y: 50},
+    {x: 100, y: 50},
+    {x: 100, y: 200},
+    {x: 250, y: 200},
+    {x: 250, y: 300},
+    {x: 350, y: 300}
+];
+
+let towers = [];
+let enemies = [];
+let projectiles = [];
+let waveInProgress = false;
+
+const towerTypes = {
+    archer: { cost: 50, range: 70, damage: 25, coolDown: 30, color: '#00adb5' },
+    cannon: {
+
